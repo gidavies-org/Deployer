@@ -1,0 +1,36 @@
+# Workflow to build and deploy a Node.js application to an Azure App Service
+
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: gidavies/deployer/.github/workflows/build.yml@main
+    with:
+      node_version: '16.x'
+  
+  #publish:
+  #  uses: gidavies/simplewebapp/.github/workflows/containerise.yml@main
+  #  needs: build
+
+  #deploy:
+  #    # Don't run this job if the commit message contains 'skip deploy'
+  #  if: "!contains(github.event.head_commit.message, 'skip deploy')"
+  #  uses: gidavies/simplewebapp/.github/workflows/deploy_to_azure_oidc.yml@main
+  #  with:
+  #    envName: 'Production'
+  #    appServiceName: 'simplewebapp-gd-cont'
+  #    acrName: 'simplewebapp'
+  #    tagName: 'simplewebapp'
+  #  secrets:
+  #  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+    #    # PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}
+   #   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+   #   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+   # needs: build

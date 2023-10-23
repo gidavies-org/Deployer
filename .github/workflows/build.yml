@@ -1,0 +1,45 @@
+# Reusable workflow to build a Node app.
+#
+# Calling workflows include:
+#   - The deployment workflow deploy_on_push.yml
+#   - The PR required checks workflow pr_checks.yml
+#   - The deployment if a label is added in the PR workflow deploy_on_label.yml
+
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build and test a Node app
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node_version }}
+        cache: 'npm'
+
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v3
+      with:
+        name: node-app
+        path: .
+
+    - name: Add job summary
+      run: |
+        echo '### Node app built and tested :hammer_and_wrench:' >> $GITHUB_STEP_SUMMARY
+        echo 'Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> $GITHUB_STEP_SUMMARY
