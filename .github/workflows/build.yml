@@ -5,6 +5,9 @@ name: Build
 on:
   workflow_call:
     inputs:
+      artifactName:
+        required: true
+        type: string
       node_version:
         required: true
         type: string
@@ -31,7 +34,7 @@ jobs:
     - name: Upload artifact for other jobs
       uses: actions/upload-artifact@v3
       with:
-        name: gd-simple-node-app
+        name: ${{ inputs.artifactName }}
         path: .
 
     - name: Add job summary
