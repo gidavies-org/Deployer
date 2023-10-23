@@ -22,6 +22,7 @@ jobs:
   deploy-dev:
     # Don't run this job if the commit message contains 'skip deploy'
     if: "!contains(github.event.head_commit.message, 'skip deploy')"
+    name: 'Deploy to Dev'
     uses: gidavies-org/deployer/.github/workflows/deploy-with-secrets.yml@main
     with:
       envName: 'Dev'
@@ -37,9 +38,10 @@ jobs:
   deploy-prod:
     # Don't run this job if the commit message contains 'skip deploy'
     if: "!contains(github.event.head_commit.message, 'skip deploy')"
+    name: 'Deploy to Prod'
     uses: gidavies-org/deployer/.github/workflows/deploy-with-oidc.yml@main
     with:
-      envName: 'Dev'
+      envName: 'Prod'
       artifactName: '$ARTIFACT_NAME'
       appServiceName: 'simplewebapp-gd-prod'
       acrName: 'simplewebapp'
