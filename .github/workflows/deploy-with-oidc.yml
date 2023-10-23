@@ -1,6 +1,6 @@
-# Reusable workflow to deploy a Node app to an Azure App Service using GitHub Secrets.
+# Reusable workflow to deploy a Node app to an Azure App Service using OIDC.
 
-name: Deploy with secrets
+name: Deploy to Azure using OIDC
 
 on:
   workflow_call:
@@ -20,43 +20,51 @@ on:
       tagName:
         required: true 
         type: string
-    secrets:
-      AZURE_CREDENTIALS:
+    secrets:            # Rather than inherit all, explicitly state and require the needed secrets
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
         required: true
 
 jobs:
   deploy:
     name: Deploy to ${{ inputs.envName }}
     permissions:
-      contents: none
+      id-token: write  # Needed for OIDC 
+      contents: read
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.envName }}
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
     - name: Download artifact from the build job
       uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.artifactName }}
-
-    - uses: azure/login@v1
+      
+    - name: Azure login using OIDC
+      uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    
     - name: Build and push container to an Azure Container Registry
       run: |
         az acr login --name ${{ inputs.acrName }}
         docker build . -t ${{ inputs.tagName }}
         docker tag ${{ inputs.tagName }} ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}
         docker push ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}
-    
+
     - name: Deploy container from ACR to Azure App Service
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ inputs.appServiceName }}
         images: '${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}'
-      
-    - name: Deployment summary
+    
+    - name: Add container deployment job summary
       run: echo '### Deployment to ${{ inputs.envName }} complete. Container ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }} deployed to App Service ${{ inputs.appServiceName }} :dart:' >> $GITHUB_STEP_SUMMARY
