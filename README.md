@@ -37,14 +37,3 @@ F -->|Needs| C(build.yml)
 ```
 (This is an embedded [Markdown defined Mermaid diagram](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/))
 
-
-## Notes
-
-# Service Principal
-
-Created using:
-
-```
-az ad sp create-for-rbac --name "GD-SP-SimpleWebApp" --role contributor \
-    --scopes /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/simplewebapp-rg
-```

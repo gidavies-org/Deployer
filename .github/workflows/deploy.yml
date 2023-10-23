@@ -9,11 +9,15 @@ on:
       - '**/*.md'
   workflow_dispatch:
 
+env:
+  ARTIFACT_NAME: 'gd-simple-node-app'
+
 jobs:
   build:
     uses: gidavies-org/deployer/.github/workflows/build.yml@main
     with:
-      node_version: '16.x'
+        artifactName: '$ARTIFACT_NAME'
+        node_version: '16.x'
 
   deploy-dev:
      # Don't run this job if the commit message contains 'skip deploy'
@@ -21,6 +25,7 @@ jobs:
     uses: gidavies-org/deployer/.github/workflows/deploy-with-secrets.yml@main
     with:
       envName: 'Dev'
+      artifactName: '$ARTIFACT_NAME'
       appServiceName: 'simplewebapp-gd-dev'
       acrName: 'simplewebapp'
       tagName: 'simplewebapp-gd'
