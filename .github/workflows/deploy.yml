@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    uses: gidavies/deployer/.github/workflows/build.yml@main
+    uses: gidavies-org/deployer/.github/workflows/build.yml@main
     with:
       node_version: '16.x'
   
