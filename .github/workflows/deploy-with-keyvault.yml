@@ -27,7 +27,8 @@ jobs:
   deploy:
     name: Deploy to ${{ inputs.envName }}
     permissions:
-      contents: none
+      id-token: write  # Needed for OIDC 
+      contents: read
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.envName }}
