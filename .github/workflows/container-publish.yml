@@ -19,8 +19,7 @@ on:
         required: true
     outputs:
       imageName:
-        type: string
-        value: ${{ steps.publish.outputs.imageName }}
+        value: ${{ jobs.publish.outputs.imageName }}
 
 jobs:
   publish:
