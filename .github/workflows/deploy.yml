@@ -49,7 +49,7 @@ jobs:
   deploy-test:
     # Don't run this job if the commit message contains 'skip deploy'
     if: "!contains(github.event.head_commit.message, 'skip deploy')"
-    name: 'Deploy to Dev'
+    name: 'Deploy to Test'
     uses: gidavies-org/deployer/.github/workflows/deploy-with-keyvault.yml@main
     with:
       envName: 'Test'
