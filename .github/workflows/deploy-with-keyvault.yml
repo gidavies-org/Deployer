@@ -48,7 +48,9 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          echo "$keyVaultValue=$(az keyvault secret show --name "DeploymentCredentials" --vault-name "gidavies-secrets-kv" --query "value")" >> $GITHUB_OUTPUT
+          secretValue=$(az keyvault secret show --name "DeploymentCredentials" --vault-name "gidavies-secrets-kv" --query "value")
+          echo "::add-mask::$secretValue"
+          echo "$keyVaultValue=$secretValue" >> $GITHUB_OUTPUT
 
     - name: Azure Logout
       uses: azure/CLI@v1
@@ -59,7 +61,7 @@ jobs:
     - name: Azure Login with creds from Key Vault
       uses: azure/login@v1
       with:
-        creds: "${{ steps.azure-kv-secrets.keyVaultValue.outputs.keyVaultValue }}"
+        creds: "${{ steps.azure-kv-secrets.outputs.keyVaultValue }}"
 
     - name: Deploy container from ACR to Azure App Service
       id: deploy-to-webapp
