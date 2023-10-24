@@ -43,10 +43,6 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
-    - name: Download artifact from the build job
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ inputs.artifactName }}
       
     - name: Azure login using OIDC
       uses: azure/login@v1
