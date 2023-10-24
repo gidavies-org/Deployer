@@ -50,7 +50,7 @@ jobs:
         inlineScript: |
           secretValue=$(az keyvault secret show --name "DeploymentCredentials" --vault-name "gidavies-secrets-kv" --query "value")
           echo "::add-mask::$secretValue"
-          echo "$keyVaultValue=$secretValue" >> $GITHUB_OUTPUT
+          echo "keyVaultValue=$secretValue" >> $GITHUB_OUTPUT
 
     - name: Azure Logout
       uses: azure/CLI@v1
