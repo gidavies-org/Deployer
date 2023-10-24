@@ -57,6 +57,8 @@ jobs:
       with:
         inlineScript: |
           az logout
+          az cache purge
+          az account clear
 
     - name: Azure Login with creds from Key Vault
       uses: azure/login@v1
