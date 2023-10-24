@@ -17,9 +17,12 @@ A(deploy.yml) -->|Calls| B(build.yml)
 B(build.yml) -->|Uploads Artifact| G[Build Artifact]
 A(deploy.yml) -->|Calls| C(container-publish.yml)
 C(container-publish.yml) -->|Outputs| H[Container Image in ACR]
-A(deploy.yml) -->|Calls| D(deploy-with-secrets.yml) -->[Dev Environment]
-A(deploy.yml) -->|Calls| E(deploy-with-keyvault.yml) -->[Test Environment]
-A(deploy.yml) -->|Calls| F(deploy-with-oidc.yml) -->[Prod Environment]
+A(deploy.yml) -->|Calls| D(deploy-with-secrets.yml) 
+D(deploy-with-secrets.yml) -->|Deploys| I[Dev Environment]
+A(deploy.yml) -->|Calls| E(deploy-with-keyvault.yml)
+E(deploy-with-keyvault.yml) -->|Deploys| J[Test Environment]
+A(deploy.yml) -->|Calls| F(deploy-with-oidc.yml) 
+F(deploy-with-oidc.yml) -->|Deploys| K[Prod Environment]
 ```
 (This is an embedded [Markdown defined Mermaid diagram](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/))
 
