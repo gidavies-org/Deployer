@@ -14,10 +14,12 @@ The deploy.yml workflow is the orchestrator, calling the other reusable workflow
 flowchart LR
 
 A(deploy.yml) -->|Calls| B(build.yml)
+B(build.yml) -->|Uploads Artifact| G[Build Artifact]
 A(deploy.yml) -->|Calls| C(container-publish.yml)
-A(deploy.yml) -->|Calls| D(deploy-with-secrets.yml)
-A(deploy.yml) -->|Calls| E(deploy-with-keyvault.yml)
-A(deploy.yml) -->|Calls| F(deploy-with-oidc.yml)
+C(container-publish.yml) -->|Outputs| H[Container Image in ACR]
+A(deploy.yml) -->|Calls| D(deploy-with-secrets.yml) -->[Dev Environment]
+A(deploy.yml) -->|Calls| E(deploy-with-keyvault.yml) -->[Test Environment]
+A(deploy.yml) -->|Calls| F(deploy-with-oidc.yml) -->[Prod Environment]
 ```
 (This is an embedded [Markdown defined Mermaid diagram](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/))
 
