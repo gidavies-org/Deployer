@@ -20,6 +20,9 @@ on:
       tagName:
         required: true 
         type: string
+      imageName:
+        required: true
+        type: string
     secrets:            # Rather than inherit all, explicitly state and require the needed secrets
       AZURE_CLIENT_ID:
         required: true
@@ -51,20 +54,13 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    
-    - name: Build and push container to an Azure Container Registry
-      run: |
-        az acr login --name ${{ inputs.acrName }}
-        docker build . -t ${{ inputs.tagName }}
-        docker tag ${{ inputs.tagName }} ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}
-        docker push ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}
 
     - name: Deploy container from ACR to Azure App Service
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ inputs.appServiceName }}
-        images: '${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}'
+        images: '${{ inputs.imageName }}'
     
     - name: Add container deployment job summary
-      run: echo '### Deployment to ${{ inputs.envName }} complete. Container ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }} deployed to App Service ${{ inputs.appServiceName }} :dart:' >> $GITHUB_STEP_SUMMARY
+      run: echo '### Deployment to ${{ inputs.envName }} complete. Container ${{ inputs.imageName }} deployed to App Service ${{ inputs.appServiceName }} :dart:' >> $GITHUB_STEP_SUMMARY

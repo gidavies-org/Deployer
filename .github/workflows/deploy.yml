@@ -14,10 +14,23 @@ env:
 
 jobs:
   build:
+    name: 'Build'
     uses: gidavies-org/deployer/.github/workflows/build.yml@main
     with:
         artifactName: '$ARTIFACT_NAME'
         node_version: '16.x'
+  
+  publish:
+    name: 'Publish to ACR'
+    uses: gidavies-org/deployer/.github/workflows/container-publish.yml@main
+    with:
+      artifactName: '$ARTIFACT_NAME'
+      acrName: 'simplewebapp'
+      tagName: 'simplewebapp-gd'
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+    needs: build
 
   deploy-dev:
     # Don't run this job if the commit message contains 'skip deploy'
@@ -30,10 +43,11 @@ jobs:
       appServiceName: 'simplewebapp-gd-dev'
       acrName: 'simplewebapp'
       tagName: 'simplewebapp-gd'
+      imageName: ${{ needs.publish.outputs.imageName}}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-    needs: build
+    needs: publish
 
   deploy-prod:
     # Don't run this job if the commit message contains 'skip deploy'
@@ -46,6 +60,7 @@ jobs:
       appServiceName: 'simplewebapp-gd-prod'
       acrName: 'simplewebapp'
       tagName: 'simplewebapp-gd'
+      imageName: ${{ needs.publish.outputs.imageName}}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
