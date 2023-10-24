@@ -46,6 +46,20 @@ jobs:
 
     needs: publish
 
+  deploy-test:
+    # Don't run this job if the commit message contains 'skip deploy'
+    if: "!contains(github.event.head_commit.message, 'skip deploy')"
+    name: 'Deploy to Dev'
+    uses: gidavies-org/deployer/.github/workflows/deploy-with-keyvault.yml@main
+    with:
+      envName: 'Test'
+      appServiceName: 'simplewebapp-gd-test'
+      imageName: ${{ needs.publish.outputs.imageName}}
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    needs: deploy-dev
+
   deploy-prod:
     # Don't run this job if the commit message contains 'skip deploy'
     if: "!contains(github.event.head_commit.message, 'skip deploy')"
@@ -60,4 +74,4 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    needs: deploy-dev
+    needs: deploy-prod

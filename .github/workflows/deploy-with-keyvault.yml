@@ -1,0 +1,65 @@
+# Reusable workflow to deploy a Node app to an Azure App Service 
+# using secrets from Azure Key Vault.
+
+name: Deploy with key vault
+
+on:
+  workflow_call:
+    inputs:
+      envName:
+        required: true
+        type: string
+      appServiceName:
+        required: true
+        type: string
+      imageName:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.envName }}
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.envName }}
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Get secret from Azure Key Vault
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          secretValue=$(az keyvault secret show --name "DeploymentCredentials" --vault-name "gidavies-secrets-kv" --query "value")
+          echo "keyVaultValue="$secretValue >> $GITHUB_ENV
+
+    - name: Azure Logout
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az logout
+
+    - name: Azure Login with creds from Key Vault
+      uses: azure/login@v1
+      with:
+        creds: $keyVaultValue
+
+    - name: Deploy container from ACR to Azure App Service
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ inputs.appServiceName }}
+        images: '${{ inputs.imageName }}'
+      
+    - name: Deployment summary
+      run: echo '### Deployment to ${{ inputs.envName }} complete. Container ${{ inputs.imageName }} deployed to App Service ${{ inputs.appServiceName }} :dart:' >> $GITHUB_STEP_SUMMARY
