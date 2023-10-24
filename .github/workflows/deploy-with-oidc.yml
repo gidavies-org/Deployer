@@ -5,20 +5,11 @@ name: Deploy to Azure using OIDC
 on:
   workflow_call:
     inputs:
-      artifactName:
-        required: true
-        type: string
       envName:
         required: true
         type: string
       appServiceName:
         required: true
-        type: string
-      acrName:
-        required: true
-        type: string
-      tagName:
-        required: true 
         type: string
       imageName:
         required: true

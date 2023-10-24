@@ -39,10 +39,7 @@ jobs:
     uses: gidavies-org/deployer/.github/workflows/deploy-with-secrets.yml@main
     with:
       envName: 'Dev'
-      artifactName: '$ARTIFACT_NAME'
       appServiceName: 'simplewebapp-gd-dev'
-      acrName: 'simplewebapp'
-      tagName: 'simplewebapp-gd'
       imageName: ${{ needs.publish.outputs.imageName}}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
@@ -56,10 +53,7 @@ jobs:
     uses: gidavies-org/deployer/.github/workflows/deploy-with-oidc.yml@main
     with:
       envName: 'Prod'
-      artifactName: '$ARTIFACT_NAME'
       appServiceName: 'simplewebapp-gd-prod'
-      acrName: 'simplewebapp'
-      tagName: 'simplewebapp-gd'
       imageName: ${{ needs.publish.outputs.imageName}}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
