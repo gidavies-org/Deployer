@@ -50,5 +50,5 @@ jobs:
         echo "imageName=${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}" >> $GITHUB_OUTPUT
         docker push ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }}
     
-    - name: Publish summary
-      run: echo '### Container published to ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }} :dart:' >> $GITHUB_STEP_SUMMARY
+#    - name: Publish summary
+#      run: echo '### Container published to ${{ inputs.acrName }}.azurecr.io/${{ inputs.tagName }}:${{ github.sha }} :dart:' >> $GITHUB_STEP_SUMMARY
