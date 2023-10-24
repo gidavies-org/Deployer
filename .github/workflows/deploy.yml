@@ -1,4 +1,4 @@
-# Workflow to build and deploy a Node.js application to an Azure App Service
+# Orchestrating workflow to build and deploy a Node.js application to an Azure App Service
 
 name: Deploy
 

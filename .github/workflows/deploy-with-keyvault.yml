@@ -48,18 +48,17 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          secretValue=$(az keyvault secret show --name "DeploymentCredentials" --vault-name "gidavies-secrets-kv" --query "value")
-          #echo "::add-mask::$secretValue"
+          secretValue=$(az keyvault secret show --name "${{ secrets.VAULT_SECRET_NAME }}" --vault-name "${{ secrets.VAULT_NAME }}" --query "value")
+          echo "::add-mask::$secretValue"
           echo "keyVaultValue=$secretValue" >> $GITHUB_OUTPUT
 
-    - name: Azure Logout
+    - name: Azure Logout # Just to show that the next login uses the creds from Key Vault
       uses: azure/CLI@v1
       with:
         inlineScript: |
           az logout
           az cache purge
           az account clear
-          echo "GD Test: ${{ steps.azure-kv-secrets.outputs.keyVaultValue }}"
 
     - name: Azure Login with creds from Key Vault
       uses: azure/login@v1
