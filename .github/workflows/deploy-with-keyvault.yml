@@ -59,7 +59,7 @@ jobs:
     - name: Azure Login with creds from Key Vault
       uses: azure/login@v1
       with:
-        creds: $keyVaultValue
+        creds: ${{ env.keyVaultValue }}
 
     - name: Deploy container from ACR to Azure App Service
       id: deploy-to-webapp
