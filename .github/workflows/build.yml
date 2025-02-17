@@ -49,4 +49,5 @@ jobs:
     - name: Add job summary
       run: |
         echo '### Build complete' >> $GITHUB_STEP_SUMMARY
-        
+    
+    needs: build   
