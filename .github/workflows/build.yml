@@ -41,3 +41,12 @@ jobs:
       run: |
         echo '### Node app built and tested :hammer_and_wrench:' >> $GITHUB_STEP_SUMMARY
         echo 'Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    name: Final summary
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add job summary
+      run: |
+        echo '### Build complete' >> $GITHUB_STEP_SUMMARY
+        
